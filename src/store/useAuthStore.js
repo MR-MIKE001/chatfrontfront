@@ -75,11 +75,18 @@ export const useAuthStore = create((set, get) => {
       const { authUser } = get();
 
       if (!authUser || get().socket?.connected) return;
-      const socket = io(url, {
-        query: {
-          userid: authUser._id,
+      const socket = io(
+        url,
+        {
+          withCredentials: true,
+          transports: ["polling"], // recommended for Render
         },
-      });
+        {
+          query: {
+            userid: authUser._id,
+          },
+        },
+      );
       socket.connect();
 
       set({ socket: socket });
